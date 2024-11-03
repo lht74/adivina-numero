@@ -12,11 +12,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import kotlin.math.pow
 
 class MainActivity : ComponentActivity() {
@@ -54,7 +56,7 @@ fun NumericKeypad(
     ) {
         numbers.forEach { row ->
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(.7f),  // Ajusta el ancho según tus necesidades
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 row.forEach { number ->
@@ -67,7 +69,7 @@ fun NumericKeypad(
                             Surface(
                                 modifier = Modifier
                                     .aspectRatio(1f)
-                                    .fillMaxWidth()
+                                    .fillMaxWidth(1f)
                                     .clip(RoundedCornerShape(8.dp))
                                     .border(
                                         1.dp,
@@ -105,6 +107,11 @@ fun NumericKeypad(
         }
     }
 }
+@Preview(showBackground = true,
+    showSystemUi = true,
+    widthDp = 360,
+    heightDp = 640)
+
 
 @Composable
 fun AdivinaApp() {
@@ -118,6 +125,7 @@ fun AdivinaApp() {
     var mensaje by remember { mutableStateOf("") }
     var mostrarDialogoNivel by remember { mutableStateOf(true) }
     var mostrarDialogoVictoria by remember { mutableStateOf(false) }
+
     fun iniciarNuevoJuego() {
         val maximo = 10.0.pow(nivel.toDouble()).toInt() - 1
         numeroSecreto = (1..maximo).random()
@@ -155,7 +163,7 @@ fun AdivinaApp() {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
-            text = "Nivel actual: $nivel",
+            text = "Nivel: $nivel",
             fontSize = 24.sp,
             textAlign = TextAlign.Center
         )
@@ -208,12 +216,16 @@ fun AdivinaApp() {
             onClick = { verificarNumero() },
             enabled = juegoActivo && numeroIngresado.isNotEmpty()
         ) {
-            Text("Adivinar")
+            Text(text = "Adivinar",
+                fontSize = 18.sp,
+                color = Color.Black)
         }
 
         Text(
             text = "Intentos: $intentos",
-            fontSize = 16.sp
+            fontSize = 24.sp,
+            color = Color.Blue
+
         )
 
         Button(
@@ -258,8 +270,16 @@ fun AdivinaApp() {
     if (mostrarDialogoVictoria) {
         AlertDialog(
             onDismissRequest = { },
-            title = { Text("¡Felicitaciones!") },
-            text = { Text("Has ganado en $intentos intentos.\n¿Quieres jugar otra vez?") },
+            title = { Text("¡Felicitaciones!", color = Color.Blue) },
+            text = { Text(text = "Puntaje:" +
+                    " ${ 10.0.pow(nivel.toDouble()).toInt() * (100 -intentos) }" +
+                    "\n \n ¿Quieres jugar otra vez?" ,
+                    fontSize = 20.sp)
+
+
+                   },
+
+
             confirmButton = {
                 TextButton(
                     onClick = {
